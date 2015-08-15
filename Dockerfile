@@ -1,8 +1,9 @@
-FROM debian:wheezy
+FROM gliderlabs/alpine:3.1
 
-RUN apt-get update && \
-    apt-get -y upgrade && \
-    apt-get install --no-install-recommends -y python2.7 python-pip
+RUN apk add --update \
+    python \
+    python-dev \
+    py-pip
 
 RUN pip install elasticsearch-curator==3.0.0
 
