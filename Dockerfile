@@ -1,10 +1,9 @@
-FROM gliderlabs/alpine:3.1
+FROM python:3.6-slim
 
-RUN apk add --update \
-    python \
-    python-dev \
-    py-pip
+RUN pip install --quiet elasticsearch-curator urllib3[secure]
+ADD ./docker-entrypoint.sh /
+ADD ./config/curator.yml /opt/curator/config/curator.yml
+ADD ./config/action.yml /opt/curator/config/action.yml
 
-RUN pip install elasticsearch-curator==3.0.0
-
-ENTRYPOINT ["curator"]
+ENTRYPOINT [ "/docker-entrypoint.sh" ]
+CMD [ "/usr/local/bin/curator" ]
