@@ -1,6 +1,8 @@
-FROM python:3.6-slim
+FROM alpine:3.7
 
-RUN pip install elasticsearch-curator urllib3[secure]
+RUN apk add --no-cache python2 py-pip
+
+RUN pip install elasticsearch-curator
 ADD ./docker-entrypoint.sh /
 ADD ./config/curator.yaml /opt/curator/config/curator.yaml
 ADD ./config/action.yaml /opt/curator/config/action.yaml
