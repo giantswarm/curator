@@ -11,18 +11,13 @@ TIMESTRING=${TIMESTRING:-%Y.%m.%d}
 
 sed -i -e "s;^  hosts: \['127\.0\.0\.1'\];  hosts: [\"${ES_HOST}\"];" \
        -e "s;^  port: 9200;  port: ${ES_PORT};" \
-       /opt/curator/config/curator.yml
+       /opt/curator/config/curator.yaml
 
 sed -i -e "s;^      unit: days;      unit: ${DELETE_UNIT};" \
        -e "s;^      unit_count: 14;      unit_count: ${DELETE_UNIT_COUNT};" \
        -e "s;^      value: fluentd-;      value: ${INDEX_NAME_PREFIX};" \
        -e "s;^      timestring: '%Y.%m.%d';      timestring: \"${TIMESTRING}\";" \
-       /opt/curator/config/action.yml
-
-cat /opt/curator/config/curator.yml
-echo ""
-cat /opt/curator/config/action.yml
-echo ""
+       /opt/curator/config/action.yaml
 
 # Add /usr/local/bin/curator as command if needed
 if [[ "$1" == -* ]]; then
