@@ -1,41 +1,28 @@
 #!/bin/bash
 set -e
 
-if [ -z $ES_HOST ] ; then
-  echo "FATAL: environment variable ES_HOST missing." && exit 1
-fi
-
-if [ -z $ES_PORT ] ; then
-  echo "FATAL: environment variable ES_PORT missing." && exit 1
-fi
-
-if [ -z $ES_USER ] ; then
-  echo "FATAL: environment variable ES_USER missing." && exit 1
-fi
-
-if [ -z $ES_PASS ] ; then
-  echo "FATAL: environment variable ES_PASS missing." && exit 1
-fi
-
-if [ -z $DELETE_UNIT ] ; then
-  echo "FATAL: environment variable DELETE_UNIT missing." && exit 1
-fi
-
-if [ -z $DELETE_UNIT_COUNT ] ; then
-  echo "FATAL: environment variable DELETE_UNIT_COUNT missing." && exit 1
-fi
-
 KIBANA_INDEX=${KIBANA_INDEX:-.kibana}
+ES_HOST=${ES_HOST:-elasticsearch}
+ES_PORT=${ES_PORT:-9200}
+DELETE_UNIT=${DELETE_UNIT:-days}
+DELETE_UNIT_COUNT=${DELETE_UNIT_COUNT:-14}
+INDEX_NAME_PREFIX=${INDEX_NAME_PREFIX:-fluentd-}
+TIMESTRING=${TIMESTRING:-%Y.%m.%d}
 
-sed -i -e "s;^  hosts: \[ '127\.0\.0\.1' \];  hosts: [ '${ES_HOST}' ];" \
+sed -i -e "s;^  hosts: \['127\.0\.0\.1'\];  hosts: [\"${ES_HOST}\"];" \
        -e "s;^  port: 9200;  port: ${ES_PORT};" \
-       -e "s;^  http_auth:;  http_auth: '${ES_USER}:${ES_PASS}';" \
-       -e "s;^  use_ssl: False;  use_ssl: True;" \
        /opt/curator/config/curator.yml
 
 sed -i -e "s;^      unit: days;      unit: ${DELETE_UNIT};" \
-       -e "s;^      unit_count: 30;      unit_count: ${DELETE_UNIT_COUNT};" \
+       -e "s;^      unit_count: 14;      unit_count: ${DELETE_UNIT_COUNT};" \
+       -e "s;^      value: fluentd-;      value: ${INDEX_NAME_PREFIX};" \
+       -e "s;^      timestring: '%Y.%m.%d';      timestring: \"${TIMESTRING}\";" \
        /opt/curator/config/action.yml
+
+cat /opt/curator/config/curator.yml
+echo ""
+cat /opt/curator/config/action.yml
+echo ""
 
 # Add /usr/local/bin/curator as command if needed
 if [[ "$1" == -* ]]; then
