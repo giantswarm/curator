@@ -75,7 +75,7 @@ def main():
 
     try:
         es = Elasticsearch([elasticsearch_host])
-    except Exception, e:
+    except Exception as e:
         log("error", "Could not connect to elasticsearch", extra={
             "exception": e
         })
@@ -85,7 +85,7 @@ def main():
 
     try:
         indices = es.indices.get(searchterm)
-    except Exception, e:
+    except Exception as e:
         log("error", "Could not list indices for '%s'" % searchterm, extra={
             "exception": e
         })
@@ -100,7 +100,7 @@ def main():
             try:
                 es.indices.delete(index=index)
                 log("info", "Deleted index %s" % index)
-            except Exception, e:
+            except Exception as e:
                 log("error", "Error deleting index '%s'" % index, extra={
                     "exception": e
                 })
