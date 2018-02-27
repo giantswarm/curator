@@ -1,11 +1,11 @@
 # coding: utf8
 
-import os
-import sys
-import json
-from elasticsearch import Elasticsearch
 from datetime import date
 from datetime import timedelta
+from elasticsearch import Elasticsearch
+import json
+import os
+import sys
 
 # read environment variables
 elasticsearch_host = os.getenv("ELASTICSEARCH_HOST", "elasticsearch:9200")
@@ -40,9 +40,10 @@ def get_valid_indices(nameprefix, retention_days, timeformat):
     return out
 
 
-if __name__ == "__main__":
+def main():
 
     # Initial validation
+
     if retention_days < 1:
         log("error", "Retention period in days is too short (RETENTION_DAYS=%d)" % retention_days)
         sys.exit(1)
@@ -74,7 +75,7 @@ if __name__ == "__main__":
 
     try:
         es = Elasticsearch([elasticsearch_host])
-    except Exception, e:
+    except Exception as e:
         log("error", "Could not connect to elasticsearch", extra={
             "exception": e
         })
@@ -84,7 +85,7 @@ if __name__ == "__main__":
 
     try:
         indices = es.indices.get(searchterm)
-    except Exception, e:
+    except Exception as e:
         log("error", "Could not list indices for '%s'" % searchterm, extra={
             "exception": e
         })
@@ -99,7 +100,11 @@ if __name__ == "__main__":
             try:
                 es.indices.delete(index=index)
                 log("info", "Deleted index %s" % index)
-            except Exception, e:
+            except Exception as e:
                 log("error", "Error deleting index '%s'" % index, extra={
                     "exception": e
                 })
+
+
+if __name__ == "__main__":
+    main()

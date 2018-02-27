@@ -11,6 +11,9 @@ jobs:
             chmod +x ./architect
             ./architect version
       - run:
+          name: Tests
+          command: make test
+      - run:
           name: architect build
           command: ./architect build
       - deploy:
