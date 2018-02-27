@@ -1,11 +1,11 @@
 # coding: utf8
 
-import os
-import sys
-import json
-from elasticsearch import Elasticsearch
 from datetime import date
 from datetime import timedelta
+from elasticsearch import Elasticsearch
+import json
+import os
+import sys
 
 # read environment variables
 elasticsearch_host = os.getenv("ELASTICSEARCH_HOST", "elasticsearch:9200")
@@ -103,3 +103,5 @@ if __name__ == "__main__":
                 log("error", "Error deleting index '%s'" % index, extra={
                     "exception": e
                 })
+if __name__ == "__main__":
+    main()
