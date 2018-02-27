@@ -40,9 +40,10 @@ def get_valid_indices(nameprefix, retention_days, timeformat):
     return out
 
 
-if __name__ == "__main__":
+def main():
 
     # Initial validation
+
     if retention_days < 1:
         log("error", "Retention period in days is too short (RETENTION_DAYS=%d)" % retention_days)
         sys.exit(1)
@@ -103,5 +104,7 @@ if __name__ == "__main__":
                 log("error", "Error deleting index '%s'" % index, extra={
                     "exception": e
                 })
+
+
 if __name__ == "__main__":
     main()
