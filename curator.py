@@ -60,50 +60,55 @@ def main():
         log("error", "Elasticsearch host is empty (ELASTICSEARCH_HOST='')")
         sys.exit(1)
 
-    log("info", "Removing indices with name format '{prefix}{timeformat}' older than {days} days from host '{host}'".format(
-        prefix=index_name_prefix,
-        timeformat=index_name_timeformat,
-        days=retention_days,
-        host=elasticsearch_host,
-    ))
+    # index name prefixes from space-separated string
+    index_name_prefix_list = index_name_prefix.split()
 
-    # Create a set of names with index names that should be kept for now
-    valid = get_valid_indices(index_name_prefix, retention_days, index_name_timeformat)
-    if len(valid) == 0:
-        log("error", "The current index name settings yield no index names to retain")
-        sys.exit(1)
+    for index_name_prefix in index_name_prefix_list:
 
-    try:
-        es = Elasticsearch([elasticsearch_host])
-    except Exception as e:
-        log("error", "Could not connect to elasticsearch", extra={
-            "exception": e
-        })
-        sys.exit(1)
+        log("info", "Removing indices with name format '{prefix}{timeformat}' older than {days} days from host '{host}'".format(
+            prefix=index_name_prefix,
+            timeformat=index_name_timeformat,
+            days=retention_days,
+            host=elasticsearch_host,
+        ))
 
-    searchterm = index_name_prefix + "*"
+        # Create a set of names with index names that should be kept for now
+        valid = get_valid_indices(index_name_prefix, retention_days, index_name_timeformat)
+        if len(valid) == 0:
+            log("error", "The current index name settings yield no index names to retain")
+            sys.exit(1)
 
-    try:
-        indices = es.indices.get(searchterm)
-    except Exception as e:
-        log("error", "Could not list indices for '%s'" % searchterm, extra={
-            "exception": e
-        })
-        sys.exit(1)
+        try:
+            es = Elasticsearch([elasticsearch_host])
+        except Exception as e:
+            log("error", "Could not connect to elasticsearch", extra={
+                "exception": e
+            })
+            sys.exit(1)
 
-    if len(indices) == 0:
-        log("info", "No indices found")
-        sys.exit()
+        searchterm = index_name_prefix + "*"
 
-    for index in es.indices.get(searchterm):
-        if index not in valid:
-            try:
-                es.indices.delete(index=index)
-                log("info", "Deleted index %s" % index)
-            except Exception as e:
-                log("error", "Error deleting index '%s'" % index, extra={
-                    "exception": e
-                })
+        try:
+            indices = es.indices.get(searchterm)
+        except Exception as e:
+            log("error", "Could not list indices for '%s'" % searchterm, extra={
+                "exception": e
+            })
+            sys.exit(1)
+
+        if len(indices) == 0:
+            log("info", "No indices found")
+            sys.exit()
+
+        for index in es.indices.get(searchterm):
+            if index not in valid:
+                try:
+                    es.indices.delete(index=index)
+                    log("info", "Deleted index %s" % index)
+                except Exception as e:
+                    log("error", "Error deleting index '%s'" % index, extra={
+                        "exception": e
+                    })
 
 
 if __name__ == "__main__":
