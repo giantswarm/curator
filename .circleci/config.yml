@@ -11,9 +11,6 @@ jobs:
             chmod +x ./architect
             ./architect version
       - run:
-          name: Install Python 3
-          command: sudo apt-get install -y python3
-      - run:
           name: Tests
           command: make test
       - run:
