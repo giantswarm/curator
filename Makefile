@@ -1,8 +1,8 @@
 
 
 test:
-	python --version
+	python3 --version
 	pip install elasticsearch freezegun
 	# Syntax check
-	python -m py_compile ./curator.py
-	python ./curator_test.py
+	python3 -m py_compile ./curator.py
+	python3 ./curator_test.py
