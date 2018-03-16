@@ -41,6 +41,10 @@ def get_valid_indices(nameprefix, retention_days, timeformat):
 
 
 def main():
+    global index_name_prefix
+    global retention_days
+    global index_name_timeformat
+    global elasticsearch_host
 
     # Initial validation
 
