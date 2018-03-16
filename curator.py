@@ -10,7 +10,7 @@ import sys
 # read environment variables
 elasticsearch_host = os.getenv("ELASTICSEARCH_HOST", "elasticsearch:9200")
 retention_days = int(os.getenv("RETENTION_DAYS", "14"))
-index_name_prefix = os.getenv("INDEX_NAME_PREFIX", "fluentd-")
+index_name_prefix = os.getenv("INDEX_NAME_PREFIX", "fluentd- gslogs-")
 index_name_timeformat = os.getenv("INDEX_NAME_TIMEFORMAT", "%Y.%m.%d")
 
 
@@ -41,6 +41,10 @@ def get_valid_indices(nameprefix, retention_days, timeformat):
 
 
 def main():
+    global index_name_prefix
+    global retention_days
+    global index_name_timeformat
+    global elasticsearch_host
 
     # Initial validation
 
