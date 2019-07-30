@@ -1,5 +1,6 @@
-FROM alpine:3.8
+FROM quay.io/giantswarm/alpine:3.9-giantswarm
 
+USER root
 
 RUN apk add --no-cache python3 && \
     python3 -m ensurepip && \
@@ -12,5 +13,7 @@ RUN apk add --no-cache python3 && \
 RUN pip install elasticsearch
 
 ADD ./curator.py /curator.py
+
+USER giantswarm
 
 ENTRYPOINT ["python", "/curator.py"]
