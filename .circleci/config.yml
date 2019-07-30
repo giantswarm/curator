@@ -16,6 +16,9 @@ jobs:
       - run:
           name: architect build
           command: ./architect build
+      - run:
+          name: Publish chart to CNR using a temporary channel for feature branch deploys
+          command: ./architect publish --pipeline=false --channels=wip-${CIRCLE_SHA1}
       - deploy:
           name: architect deploy (master only)
           command: |
